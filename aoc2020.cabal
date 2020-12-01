@@ -1,0 +1,72 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.33.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 33ae0c6d7885f2f60ad2e4e9ea05ba741a0db9e0b80acff50def29debb14bfa3
+
+name:           aoc2020
+version:        0.1.0.0
+description:    Please see the README on Github at <https://github.com/ewilden/aoc2020#readme>
+homepage:       https://github.com/ewilden/aoc2020#readme
+bug-reports:    https://github.com/ewilden/aoc2020/issues
+author:         Evan Wildenhain
+maintainer:     evan.wildenhain@gmail.com
+copyright:      2020 Evan Wildenhain
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    ChangeLog.md
+
+source-repository head
+  type: git
+  location: https://github.com/ewilden/aoc2020
+
+library
+  exposed-modules:
+      Import
+      Run
+      Types
+      Util
+  other-modules:
+      Paths_aoc2020
+  hs-source-dirs:
+      src
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wpartial-fields -Wredundant-constraints
+  build-depends:
+      base >=4.11 && <10
+    , rio >=0.1.12.0
+  default-language: Haskell2010
+
+executable aoc2020-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_aoc2020
+  hs-source-dirs:
+      app
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      aoc2020
+    , base >=4.11 && <10
+    , optparse-simple
+    , rio >=0.1.12.0
+  default-language: Haskell2010
+
+test-suite aoc2020-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      UtilSpec
+      Paths_aoc2020
+  hs-source-dirs:
+      test
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      aoc2020
+    , base >=4.11 && <10
+    , hspec
+    , rio >=0.1.12.0
+  default-language: Haskell2010
