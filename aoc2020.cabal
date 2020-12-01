@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 33ae0c6d7885f2f60ad2e4e9ea05ba741a0db9e0b80acff50def29debb14bfa3
+-- hash: d32f1cab3078f486ea4c977ffc169611d10d8cfa16fa6efb081f6f9b9ca14f36
 
 name:           aoc2020
 version:        0.1.0.0
@@ -27,6 +27,7 @@ source-repository head
 
 library
   exposed-modules:
+      Day01
       Import
       Run
       Types
@@ -38,6 +39,9 @@ library
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wpartial-fields -Wredundant-constraints
   build-depends:
       base >=4.11 && <10
+    , composition
+    , microlens-platform
+    , mtl
     , rio >=0.1.12.0
   default-language: Haskell2010
 
@@ -51,6 +55,9 @@ executable aoc2020-exe
   build-depends:
       aoc2020
     , base >=4.11 && <10
+    , composition
+    , microlens-platform
+    , mtl
     , optparse-simple
     , rio >=0.1.12.0
   default-language: Haskell2010
@@ -67,6 +74,9 @@ test-suite aoc2020-test
   build-depends:
       aoc2020
     , base >=4.11 && <10
+    , composition
     , hspec
+    , microlens-platform
+    , mtl
     , rio >=0.1.12.0
   default-language: Haskell2010
