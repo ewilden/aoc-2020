@@ -12,7 +12,7 @@ import qualified RIO.Text as Text
 
 input :: IO [Int]
 input = do
-  rawInput <- readFileUtf8 "input/1.txt"
+  rawInput <- readFileUtf8 "input/01.txt"
   return $ map (read . Text.unpack) $ Text.linesCR rawInput
 
 answer1 :: [Int] -> [Int]
