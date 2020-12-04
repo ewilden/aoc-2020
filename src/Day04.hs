@@ -8,12 +8,10 @@ module Day04 where
 import Import hiding (lookup, many, try)
 import RIO.HashMap (lookup)
 import qualified RIO.HashMap as HashMap
-import qualified RIO.HashSet as HashSet
 import qualified RIO.Text as Text
 import Text.Megaparsec
 import Text.Megaparsec.Char
 import Text.Megaparsec.Char.Lexer
-import Prelude (putStrLn)
 
 data FieldType
   = Byr
@@ -110,11 +108,13 @@ isValid2 passport
     let fields = Cid `HashMap.delete` HashMap.fromList passport
      in maybe False id $ do
           let check b = if b then pure () else Nothing
-          byr :: Int <- readMaybe . Text.unpack =<< Byr `lookup` fields
+          let intField :: FieldType -> Maybe Int
+              intField t = readMaybe . Text.unpack =<< t `lookup` fields
+          byr <- intField Byr
           check $ byr `isInRange` (1920, 2002)
-          iyr :: Int <- readMaybe . Text.unpack =<< Iyr `lookup` fields
+          iyr <- intField Iyr
           check $ iyr `isInRange` (2010, 2020)
-          eyr :: Int <- readMaybe . Text.unpack =<< Eyr `lookup` fields
+          eyr <- intField Eyr
           check $ eyr `isInRange` (2020, 2030)
           hgt :: (Int, HeightUnit) <- Hgt `lookup` fields >>= parseMaybe pHeight
           check $ case snd hgt of
