@@ -6,12 +6,8 @@ module Day05 where
 
 import Import
 import qualified RIO.HashSet as HashSet
-import RIO.List (cycle)
 import RIO.List.Partial (maximum)
 import qualified RIO.Text as Text
-
-parseLine :: Text -> [Bool]
-parseLine line = cycle $ map (== '#') $ Text.unpack line
 
 input :: IO [Text]
 input = do
