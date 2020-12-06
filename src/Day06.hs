@@ -6,7 +6,6 @@ module Day06 where
 
 import Import
 import qualified RIO.HashSet as HashSet
-import RIO.List.Partial (maximum, minimum)
 import qualified RIO.Text as Text
 import RIO.Text.Partial (splitOn)
 
