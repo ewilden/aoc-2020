@@ -13,6 +13,8 @@ import Text.Megaparsec
 import Text.Megaparsec.Char
 import Text.Megaparsec.Char.Lexer
 
+type Parser = Parsec Void Text
+
 data FieldType
   = Byr
   | Iyr
@@ -22,15 +24,13 @@ data FieldType
   | Ecl
   | Pid
   | Cid
-  deriving (Show, Eq, Ord, Enum, Generic)
+  deriving (Show, Eq, Generic)
 
 instance Hashable FieldType
 
 type Field = (FieldType, Text)
 
 type Passport = [Field]
-
-type Parser = Parsec Void Text
 
 pFieldType :: Parser FieldType
 pFieldType =

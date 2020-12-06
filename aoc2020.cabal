@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 8e29d789813ec09c483138dff150541175eb5ff98b5a06ede169eb34b1805d9a
+-- hash: 170fb1689871625e15d9e24915c553c6a33f61e06b1d8b1e22003a96a056d540
 
 name:           aoc2020
 version:        0.1.0.0
@@ -32,7 +32,9 @@ library
       Day03
       Day04
       Day05
+      Day06
       Import
+      Lens.Micro.Binary
       Run
       Types
       Util
@@ -45,6 +47,7 @@ library
       base >=4.11 && <10
     , composition
     , megaparsec
+    , microlens
     , microlens-platform
     , mtl
     , rio >=0.1.12.0
@@ -62,6 +65,7 @@ executable aoc2020-exe
     , base >=4.11 && <10
     , composition
     , megaparsec
+    , microlens
     , microlens-platform
     , mtl
     , optparse-simple
@@ -83,6 +87,7 @@ test-suite aoc2020-test
     , composition
     , hspec
     , megaparsec
+    , microlens
     , microlens-platform
     , mtl
     , rio >=0.1.12.0

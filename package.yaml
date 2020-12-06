@@ -23,6 +23,7 @@ dependencies:
 - base >= 4.11 && < 10
 - composition
 - megaparsec
+- microlens
 - microlens-platform
 - mtl
 - rio >= 0.1.12.0

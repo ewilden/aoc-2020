@@ -6,7 +6,7 @@ module Day05 where
 
 import Import
 import qualified RIO.HashSet as HashSet
-import RIO.List.Partial (maximum)
+import RIO.List.Partial (maximum, minimum)
 import qualified RIO.Text as Text
 
 input :: IO [Text]
@@ -37,11 +37,14 @@ allPossibleSeats = (,) <$> [0 .. 127] <*> [0 .. 7]
 allPossibleIds :: [Int]
 allPossibleIds = map (uncurry toId) allPossibleSeats
 
-answer2 :: [Text] -> [Int]
+answer2 :: [Text] -> Int
 answer2 inp =
-  let takenIds = HashSet.fromList $ map (uncurry toId . getRowCol) inp
-      canBeAnswer i
-        | i `HashSet.member` takenIds = False
-        | (i + 1) `HashSet.member` takenIds = (i - 1) `HashSet.member` takenIds
-        | otherwise = False
-   in filter canBeAnswer allPossibleIds
+  let takenIds = map (uncurry toId . getRowCol) inp
+   in sum [minimum takenIds .. maximum takenIds] - sum takenIds
+
+-- let takenIds = HashSet.fromList $ map (uncurry toId . getRowCol) inp
+--     canBeAnswer i
+--       | i `HashSet.member` takenIds = False
+--       | (i + 1) `HashSet.member` takenIds = (i - 1) `HashSet.member` takenIds
+--       | otherwise = False
+--  in filter canBeAnswer allPossibleIds
