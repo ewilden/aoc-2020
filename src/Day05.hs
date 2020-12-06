@@ -5,7 +5,6 @@
 module Day05 where
 
 import Import
-import qualified RIO.HashSet as HashSet
 import RIO.List.Partial (maximum, minimum)
 import qualified RIO.Text as Text
 
@@ -42,6 +41,7 @@ answer2 inp =
   let takenIds = map (uncurry toId . getRowCol) inp
    in sum [minimum takenIds .. maximum takenIds] - sum takenIds
 
+-- If you think the problem specification allows for many missing IDs in the range [minimum takenIds .. maximum takenIds]:
 -- let takenIds = HashSet.fromList $ map (uncurry toId . getRowCol) inp
 --     canBeAnswer i
 --       | i `HashSet.member` takenIds = False
