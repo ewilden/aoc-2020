@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: bb0c1631656a4766c7e2f577538fbda3a0d1ece4e4306761b890ce1d05567c5f
+-- hash: d115e276ecbac0ff48b81f59cc4a6e405e30a3c2ea68d3b0b95148f4f3f87ce0
 
 name:           aoc2020
 version:        0.1.0.0
@@ -33,6 +33,7 @@ library
       Day04
       Day05
       Day06
+      Day07
       HKDExample
       Import
       Lens.Micro.Binary
@@ -51,6 +52,7 @@ library
     , megaparsec
     , microlens
     , microlens-platform
+    , monoidal-containers
     , mtl
     , rio >=0.1.12.0
   default-language: Haskell2010
@@ -70,6 +72,7 @@ executable aoc2020-exe
     , megaparsec
     , microlens
     , microlens-platform
+    , monoidal-containers
     , mtl
     , optparse-simple
     , rio >=0.1.12.0
@@ -93,6 +96,7 @@ test-suite aoc2020-test
     , megaparsec
     , microlens
     , microlens-platform
+    , monoidal-containers
     , mtl
     , rio >=0.1.12.0
   default-language: Haskell2010

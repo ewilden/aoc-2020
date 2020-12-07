@@ -26,6 +26,7 @@ dependencies:
 - megaparsec
 - microlens
 - microlens-platform
+- monoidal-containers
 - mtl
 - rio >= 0.1.12.0
 
