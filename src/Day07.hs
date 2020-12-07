@@ -10,6 +10,7 @@ module Day07 where
 
 import Data.Map.Monoidal (MonoidalMap)
 import qualified Data.Map.Monoidal as MMap
+import Data.Semigroup (Sum (..))
 import Import hiding (lookup, many, some, try)
 import Lens.Micro.Platform
 import RIO.HashMap (lookup)
@@ -142,3 +143,9 @@ reachableFrom bag bagMap =
 
 answer1 :: BagSpec -> Set.Set Bag
 answer1 inp = reachableFrom ("shiny", "gold") $ invertMap inp
+
+totalBags :: BagSpec -> Bag -> Int
+totalBags bagMap bag = getSum $ foldMap (\(qty, b) -> Sum $ qty * (1 + totalBags bagMap b)) (fromMaybe [] $ MMap.lookup bag bagMap)
+
+answer2 :: BagSpec -> Int
+answer2 inp = totalBags inp ("shiny", "gold")
