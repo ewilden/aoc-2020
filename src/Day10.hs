@@ -10,14 +10,12 @@
 
 module Day10 where
 
-import Data.Composition
 import Data.Map.Monoidal (MonoidalMap)
 import qualified Data.Map.Monoidal as MMap
 import Data.Semigroup (Sum (..))
 import Import
 import RIO.List (sort)
 import RIO.List.Partial (last, maximum)
-import qualified RIO.Map as Map
 import RIO.Partial (read)
 import qualified RIO.Text as Text
 
@@ -34,12 +32,6 @@ sortedDiffDist unsortedNums =
       prevNext = zip nums (drop 1 nums)
       diffs = fmap (uncurry $ flip (-)) prevNext
    in foldMap (`MMap.singleton` 1) diffs
-
-isValid :: [Int] -> Bool
-isValid ls = foldr (&&) True $ zipWith ((<= 3) . abs .: (-)) (drop 1 ls) ls
-
-lookupMon :: (Monoid a, Ord k) => k -> MMap.MonoidalMap k a -> a
-lookupMon = MMap.findWithDefault mempty
 
 pathsToEnd :: Int -> Int -> [Int] -> MonoidalMap Int (Sum Int)
 pathsToEnd start end [] =
