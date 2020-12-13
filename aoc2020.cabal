@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: a3cbef7d4582d8590b64766f86c85d84d23972a7dedc52dffd0d807b225ae764
+-- hash: 8fbbe99c41888571b05e775891c9cbeb8ea555a13b7467f619d0814ed2c415e2
 
 name:           aoc2020
 version:        0.1.0.0
@@ -39,6 +39,7 @@ library
       Day10
       Day11
       Day12
+      Day13
       HKDExample
       Import
       Lens.Micro.Binary
@@ -51,7 +52,8 @@ library
       src
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wpartial-fields -Wredundant-constraints
   build-depends:
-      barbies >=2.0.2.0
+      arithmoi
+    , barbies >=2.0.2.0
     , base >=4.11 && <10
     , composition
     , megaparsec
@@ -71,6 +73,7 @@ executable aoc2020-exe
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       aoc2020
+    , arithmoi
     , barbies >=2.0.2.0
     , base >=4.11 && <10
     , composition
@@ -94,6 +97,7 @@ test-suite aoc2020-test
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       aoc2020
+    , arithmoi
     , barbies >=2.0.2.0
     , base >=4.11 && <10
     , composition

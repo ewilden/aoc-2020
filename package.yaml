@@ -20,6 +20,7 @@ extra-source-files:
 description:         Please see the README on Github at <https://github.com/ewilden/aoc2020#readme>
 
 dependencies:
+- arithmoi
 - base >= 4.11 && < 10
 - barbies >= 2.0.2.0
 - composition
