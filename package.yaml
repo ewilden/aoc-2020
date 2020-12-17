@@ -23,6 +23,7 @@ dependencies:
 - arithmoi
 - base >= 4.11 && < 10
 - barbies >= 2.0.2.0
+- bimap
 - composition
 - megaparsec
 - microlens

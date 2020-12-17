@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 2a1da1df85145aa790741f5261a63fd03d1b5fb7e1b86f128b791c0ae16ab044
+-- hash: 07c9101427ec637df3dd20f13b3a1c5b6514a69dac92a0018afa0df5929ed31e
 
 name:           aoc2020
 version:        0.1.0.0
@@ -42,6 +42,7 @@ library
       Day13
       Day14
       Day15
+      Day16
       HKDExample
       Import
       Lens.Micro.Binary
@@ -57,6 +58,7 @@ library
       arithmoi
     , barbies >=2.0.2.0
     , base >=4.11 && <10
+    , bimap
     , composition
     , megaparsec
     , microlens
@@ -78,6 +80,7 @@ executable aoc2020-exe
     , arithmoi
     , barbies >=2.0.2.0
     , base >=4.11 && <10
+    , bimap
     , composition
     , megaparsec
     , microlens
@@ -102,6 +105,7 @@ test-suite aoc2020-test
     , arithmoi
     , barbies >=2.0.2.0
     , base >=4.11 && <10
+    , bimap
     , composition
     , hspec
     , megaparsec
