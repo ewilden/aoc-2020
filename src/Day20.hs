@@ -67,6 +67,12 @@ rotatePointCCW n (r, c) = (n - 1 - c, r)
 rotatePointCW :: Int -> (Int, Int) -> (Int, Int)
 rotatePointCW n = rotatePointCCW n . rotatePointCCW n . rotatePointCCW n
 
+flipPointLR :: Int -> (Int, Int) -> (Int, Int)
+flipPointLR n (r, c) = (r, n - 1 - c)
+
+flipPointUD :: Int -> (Int, Int) -> (Int, Int)
+flipPointUD n (r, c) = (n - 1 - r, c)
+
 vget :: VB.Vector (VU.Vector Bool) -> (Int, Int) -> Bool
 vget grid (r, c) = grid VB'.! r VU'.! c
 
@@ -78,6 +84,12 @@ rotateCW grid = imap (\point _ -> grid `vget` rotatePointCCW (VB.length grid) po
 
 rotateCCW :: Vector (VU.Vector Bool) -> Vector (VU.Vector Bool)
 rotateCCW = rotateCW . rotateCW . rotateCW
+
+flipLR :: VB.Vector (VU.Vector Bool) -> VB.Vector (VU.Vector Bool)
+flipLR grid = imap (\point _ -> grid `vget` flipPointLR (VB.length grid) point) grid
+
+flipUD :: VB.Vector (VU.Vector Bool) -> VB.Vector (VU.Vector Bool)
+flipUD grid = imap (\point _ -> grid `vget` flipPointUD (VB.length grid) point) grid
 
 getEdges :: Vector (VU.Vector Bool) -> [VU.Vector Bool]
 getEdges grid =
@@ -107,3 +119,94 @@ answer1 = do
   print (length tileIDsOccurringTwice)
   print tileIDsOccurringTwice
   return $ product (fmap fromIntegral tileIDsOccurringTwice)
+
+data TileTransform = CWRotate | FlipLR deriving (Show, Eq, Generic)
+
+tform :: TileTransform -> VB.Vector (VU.Vector Bool) -> VB.Vector (VU.Vector Bool)
+tform CWRotate = rotateCW
+tform FlipLR = flipLR
+
+reverseTform :: TileTransform -> VB.Vector (VU.Vector Bool) -> VB.Vector (VU.Vector Bool)
+reverseTform CWRotate = rotateCCW
+reverseTform FlipLR = flipLR
+
+tforms :: [TileTransform] -> VB.Vector (VU.Vector Bool) -> VB.Vector (VU.Vector Bool)
+tforms ts grid = foldl' (flip tform) grid ts
+
+reverseTforms :: [TileTransform] -> Vector (VU.Vector Bool) -> Vector (VU.Vector Bool)
+reverseTforms ts grid = foldr reverseTform grid ts
+
+answer2 :: IO Integer
+answer2 = do
+  inp <- input
+  let id2tile = HM.fromList inp
+      edgeToIxes = HM.fromList $
+        MMap.toList $
+          foldMap (uncurry MMap.singleton) $ do
+            (tileID, tileGrid) <- inp
+            (chosenEdge, numCWRotates) <- zip (getEdges tileGrid) [0 ..]
+            [ (VU.toList chosenEdge, [(tileID, replicate numCWRotates CWRotate)]),
+              (reverse $ VU.toList chosenEdge, [(tileID, replicate numCWRotates CWRotate ++ [FlipLR])])
+              ]
+      edgesWithNoMatches = HM.filter ((== 1) . length) edgeToIxes
+      tileIDList = HM.foldl' (++) [] edgesWithNoMatches
+      tileIDToCount = HM.fromList $ MMap.toList $ foldMap (\(tileID, _) -> MMap.singleton tileID (Sum 1)) tileIDList
+      cornerTileIDs = HM.keys $ HM.filter (== Sum 4) tileIDToCount
+      sideLength :: Int
+      sideLength = round $ sqrt $ fromIntegral $ length inp
+      suc :: (Int, Int) -> (Int, Int)
+      suc (r, c)
+        | c < sideLength - 1 = (r, c + 1)
+        | otherwise = (r + 1, 0)
+      startTileID = fromMaybe (error "head cornerTileIDs") $ headMaybe cornerTileIDs
+      pretransStartTile = id2tile ^?! ix startTileID
+      lsNumCwRotates =
+        (fmap snd $ (join $ HM.elems edgesWithNoMatches) & filter ((== startTileID) . fst))
+          & filter (all (/= FlipLR))
+          & fmap length
+          & fmap (`mod` 4)
+      numCwRotatesForStart = maximum lsNumCwRotates
+      transStartTile = tforms (replicate numCwRotatesForStart CWRotate) pretransStartTile
+      finalTileGrid = evalState greedyTiles (HM.singleton (0, 0) (startTileID, transStartTile), HashSet.singleton startTileID, (0, 0))
+      greedyTiles :: State (HashMap (Int, Int) (Int, VB.Vector (VU.Vector Bool)), HashSet Int, (Int, Int)) (HashMap (Int, Int) (Int, VB.Vector (VU.Vector Bool)))
+      greedyTiles = do
+        allocedTiles <- use _2
+        prevPoint <- use _3
+        if HashSet.size allocedTiles == length inp
+          then use _1
+          else do
+            currMap <- use _1
+            nextPoint <- _3 <%= suc
+            if snd nextPoint > snd prevPoint
+              then do
+                let prevTile = currMap ^?! ix prevPoint
+                    prevTileID = fst prevTile
+                    prevEdge = (prevTile & snd & rotateCCW) ^?! ix 0 & VU.toList
+                    matchingTileIDT = fromMaybe (error "matchingTileIDT1") $ headMaybe $ edgeToIxes ^?! ix (reverse prevEdge) & filter ((/= prevTileID) . fst)
+                    nextTileID = fst matchingTileIDT
+                    pretransTile = id2tile ^?! ix nextTileID
+                    tformedTile = tforms (snd matchingTileIDT ++ replicate 3 CWRotate) pretransTile
+                (_1 . at nextPoint) .= Just (nextTileID, tformedTile)
+                _2 %= HashSet.insert nextTileID
+                _3 .= nextPoint
+                greedyTiles
+              else do
+                let realPrevPoint = first (-1 +) nextPoint
+                    prevTile = currMap ^?! ix realPrevPoint
+                    prevTileID = fst prevTile
+                    prevEdge = (prevTile & snd & (rotateCW . rotateCW)) ^?! ix 0 & VU.toList
+                    matchingTileIDT = fromMaybe (error "matchingTileIDT2") $ headMaybe $ edgeToIxes ^?! ix (reverse prevEdge) & filter ((/= prevTileID) . fst)
+                    nextTileID = fst matchingTileIDT
+                    pretransTile = id2tile ^?! ix nextTileID
+                    tformedTile = tforms (snd matchingTileIDT) pretransTile
+                (_1 . at nextPoint) .= Just (nextTileID, tformedTile)
+                _2 %= HashSet.insert nextTileID
+                _3 .= nextPoint
+                greedyTiles
+  print (length inp)
+  print sideLength
+  print (take 5 $ HM.keys edgesWithNoMatches)
+  print (length cornerTileIDs)
+  print cornerTileIDs
+  print (HM.size finalTileGrid)
+  return $ product (fmap fromIntegral cornerTileIDs)
