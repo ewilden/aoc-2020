@@ -136,6 +136,22 @@ tforms ts grid = foldl' (flip tform) grid ts
 reverseTforms :: [TileTransform] -> Vector (VU.Vector Bool) -> Vector (VU.Vector Bool)
 reverseTforms ts grid = foldr reverseTform grid ts
 
+hasSeaMonsterAt :: (Int, Int) -> Vector (VU.Vector Bool) -> Bool
+hasSeaMonsterAt (startRow, startCol) grid =
+  let row1 = "                  # "
+      row2 = "#    ##    ##    ###"
+      row3 = " #  #  #  #  #  #   "
+      unoffsettedPoints =
+        fmap (0,) (fmap fst $ filter ((== '#') . snd) $ zip [0 ..] row1)
+          ++ fmap (1,) (fmap fst $ filter ((== '#') . snd) $ zip [0 ..] row2)
+          ++ fmap (2,) (fmap fst $ filter ((== '#') . snd) $ zip [0 ..] row3)
+   in null $ do
+        (r, c) <- unoffsettedPoints
+        let isHash = grid ^.. ix (startRow + r) . ix (startCol + c)
+        case isHash of
+          [True] -> []
+          _ -> pure ()
+
 answer2 :: IO Integer
 answer2 = do
   inp <- input
@@ -168,6 +184,43 @@ answer2 = do
       numCwRotatesForStart = maximum lsNumCwRotates
       transStartTile = tforms (replicate numCwRotatesForStart CWRotate) pretransStartTile
       finalTileGrid = evalState greedyTiles (HM.singleton (0, 0) (startTileID, transStartTile), HashSet.singleton startTileID, (0, 0))
+      preTrimTileLength = VB.length $ finalTileGrid ^?! ix (0, 0) . _2
+      trimBorders grid =
+        grid
+          & VB.slice 1 (preTrimTileLength - 2)
+          & fmap (VU.slice 1 (preTrimTileLength - 2))
+      finalTrimmedGrid = fmap (trimBorders . snd) finalTileGrid
+      -- trimmedTileLength = (VB.length $ finalTrimmedGrid ^?! ix (0, 0))
+      trimmedTileLength = preTrimTileLength - 2
+      stitchedImage :: VB.Vector (VU.Vector Bool)
+      stitchedImage =
+        VB.generate
+          (sideLength * trimmedTileLength)
+          ( \r ->
+              VU.generate
+                (sideLength * trimmedTileLength)
+                ( \c ->
+                    finalTrimmedGrid ^?! ix (r `quot` trimmedTileLength, c `quot` trimmedTileLength) . ix (r `rem` trimmedTileLength) . ix (c `rem` trimmedTileLength)
+                )
+          )
+      imageLength = sideLength * trimmedTileLength
+      allPoints = do
+        r <- [0 .. imageLength - 1]
+        c <- [0 .. imageLength - 1]
+        return (r, c)
+      numSeaMonsters img = length $ filter (`hasSeaMonsterAt` img) allPoints
+      bestNumSeaMonsters = maximum allNumSeaMonsters
+      allNumSeaMonsters =
+        [ numSeaMonsters stitchedImage,
+          numSeaMonsters (rotateCW stitchedImage),
+          numSeaMonsters (rotateCW $ rotateCW stitchedImage),
+          numSeaMonsters (rotateCCW stitchedImage),
+          numSeaMonsters $ flipLR $ stitchedImage,
+          numSeaMonsters $ flipLR $ (rotateCW stitchedImage),
+          numSeaMonsters $ flipLR $ (rotateCW $ rotateCW stitchedImage),
+          numSeaMonsters $ flipLR $ (rotateCCW stitchedImage)
+        ]
+      numHashes = length $ filter (\(r, c) -> stitchedImage ^?! ix r . ix c) allPoints
       greedyTiles :: State (HashMap (Int, Int) (Int, VB.Vector (VU.Vector Bool)), HashSet Int, (Int, Int)) (HashMap (Int, Int) (Int, VB.Vector (VU.Vector Bool)))
       greedyTiles = do
         allocedTiles <- use _2
@@ -209,4 +262,5 @@ answer2 = do
   print (length cornerTileIDs)
   print cornerTileIDs
   print (HM.size finalTileGrid)
-  return $ product (fmap fromIntegral cornerTileIDs)
+  print allNumSeaMonsters
+  return $ fromIntegral $ numHashes - 15 * bestNumSeaMonsters
