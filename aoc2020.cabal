@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 3248f9bd4c24e5ed10406103a31f20ab5d6179b95caff61e096390d66640e62b
+-- hash: b8b3fb455f087fda835ed218a8c27b203bdfac1b9765438def36d094c7edf10e
 
 name:           aoc2020
 version:        0.1.0.0
@@ -50,6 +50,7 @@ library
       Day21
       Day22
       Day23
+      Day24
       HKDExample
       Import
       Lens.Micro.Binary
