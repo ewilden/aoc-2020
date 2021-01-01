@@ -3,10 +3,10 @@
 
 module Run (run) where
 
-import Day20 (answer2, input)
+import Day23 (answer2')
 import Import
 
 run :: RIO App ()
 run = do
   logInfo $ "Answering..."
-  liftIO answer2 >>= (logInfo . displayShow)
+  logInfo $ displayShow $ answer2'

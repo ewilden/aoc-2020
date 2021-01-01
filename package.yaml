@@ -25,6 +25,7 @@ dependencies:
 - barbies >= 2.0.2.0
 - bimap
 - composition
+- containers
 - megaparsec
 - microlens
 - microlens-platform

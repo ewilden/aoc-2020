@@ -43,20 +43,6 @@ import RIO.Writer
 import Text.ParserCombinators.ReadP
 import Prelude (print)
 
-newtype Ingredient = Ingredient
-  { unIngredient :: Text
-  }
-  deriving (Show, Eq, Ord, Generic)
-
-instance Hashable Ingredient
-
-newtype Allergen = Allergen
-  { unAllergen :: Text
-  }
-  deriving (Show, Eq, Ord, Generic)
-
-instance Hashable Allergen
-
 input :: IO ([Int], [Int])
 input = do
   rawInput <- readFileUtf8 "input/22.txt"
